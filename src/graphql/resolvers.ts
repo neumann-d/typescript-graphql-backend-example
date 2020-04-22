@@ -1,6 +1,15 @@
 import moment from 'moment'
 
-import { MutationAddPaymentArgs, MutationUpdatePaymentArgs, Payments, PaymentItem, PaymentItemAddInput, PaymentItemUpdateInput, QueryPaymentsArgs } from './types'
+import {
+    MutationAddPaymentArgs,
+    MutationDeletePaymentArgs,
+    MutationUpdatePaymentArgs,
+    Payments,
+    PaymentItem,
+    PaymentItemAddInput,
+    PaymentItemUpdateInput,
+    QueryPaymentsArgs
+} from './types'
 
 // simple simulated payment store (not persistent)
 const paymentItems: Array<PaymentItem> = [
@@ -59,8 +68,8 @@ const getPayments = (
         items = items.filter(item => moment(item.time).isSameOrBefore(end))
     }
 
-    // calculate sum of all items
-    const sum: number = items.reduce((acc, curr) => acc + curr.value, 0)
+    // calculate sum of all not deleted items
+    const sum: number = items.reduce((acc, curr) => acc + (curr.isDeleted ? 0 : curr.value), 0)
 
     return {
         sum,
@@ -96,7 +105,7 @@ const updatePayment = (payment: PaymentItemUpdateInput) => {
     const index = paymentItems.findIndex(item => item.id === payment.id)
     if (index > -1) {
         // update provided fields
-        updatedItem = {...paymentItems[index], ...payment}
+        updatedItem = { ...paymentItems[index], ...payment }
 
         // set updatedAt to current time
         const now = moment().toISOString()
@@ -109,6 +118,28 @@ const updatePayment = (payment: PaymentItemUpdateInput) => {
     return updatedItem
 }
 
+const deletePayment = (paymentId: MutationDeletePaymentArgs['paymentId']) => {
+    let deletedItem: PaymentItem = null
+
+    // check if given payment exists in store
+    const index = paymentItems.findIndex(item => item.id === paymentId)
+    if (index > -1) {
+        deletedItem = { ...paymentItems[index] }
+
+        // set deletion flag to true
+        deletedItem.isDeleted = true
+
+        // set updatedAt to current time
+        const now = moment().toISOString()
+        deletedItem.updatedAt = now
+
+        // update in store
+        paymentItems[index] = deletedItem
+    }
+
+    return deletedItem
+}
+
 export default {
     Query: {
         payments: (_: void, { contractId, startDate, endDate }: QueryPaymentsArgs): Payments => getPayments(contractId, startDate, endDate)
@@ -116,6 +147,7 @@ export default {
 
     Mutation: {
         addPayment: (_: void, { payment }: MutationAddPaymentArgs): PaymentItem => addPayment(payment),
-        updatePayment: (_: void, { payment }: MutationUpdatePaymentArgs): PaymentItem => updatePayment(payment)
+        updatePayment: (_: void, { payment }: MutationUpdatePaymentArgs): PaymentItem => updatePayment(payment),
+        deletePayment: (_: void, { paymentId }: MutationDeletePaymentArgs): PaymentItem => deletePayment(paymentId)
     }
 }

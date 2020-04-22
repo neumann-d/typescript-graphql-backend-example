@@ -12,6 +12,7 @@ export type Mutation = {
    __typename?: 'Mutation';
   addPayment?: Maybe<PaymentItem>;
   updatePayment?: Maybe<PaymentItem>;
+  deletePayment?: Maybe<PaymentItem>;
 };
 
 
@@ -22,6 +23,11 @@ export type MutationAddPaymentArgs = {
 
 export type MutationUpdatePaymentArgs = {
   payment: PaymentItemUpdateInput;
+};
+
+
+export type MutationDeletePaymentArgs = {
+  paymentId: Scalars['Int'];
 };
 
 export type PaymentItem = {

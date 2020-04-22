@@ -41,6 +41,7 @@ const typeDefs = [`
     type Mutation {
         addPayment(payment: PaymentItemAddInput!): PaymentItem
         updatePayment(payment: PaymentItemUpdateInput!): PaymentItem
+        deletePayment(paymentId: Int!): PaymentItem
     }
 `]
 
