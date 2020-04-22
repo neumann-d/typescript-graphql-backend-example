@@ -25,12 +25,22 @@ const typeDefs = [`
         time: String!
     }
 
+    input PaymentItemUpdateInput {
+        id: Int!
+        contractId: Int
+        description: String
+        value: Float
+        time: String
+        isImported: Boolean
+    }
+
     type Query {
         payments(contractId: Int, startDate: String, endDate: String): Payments
     }
 
     type Mutation {
         addPayment(payment: PaymentItemAddInput!): PaymentItem
+        updatePayment(payment: PaymentItemUpdateInput!): PaymentItem
     }
 `]
 

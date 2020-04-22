@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import { MutationAddPaymentArgs, Payments, PaymentItem, PaymentItemAddInput, QueryPaymentsArgs } from './types'
+import { MutationAddPaymentArgs, MutationUpdatePaymentArgs, Payments, PaymentItem, PaymentItemAddInput, PaymentItemUpdateInput, QueryPaymentsArgs } from './types'
 
 // simple simulated payment store (not persistent)
 const paymentItems: Array<PaymentItem> = [
@@ -69,7 +69,7 @@ const getPayments = (
 }
 
 const addPayment = (payment: PaymentItemAddInput) => {
-    const paymentItem: PaymentItem = {...payment}
+    const paymentItem: PaymentItem = { ...payment }
 
     // create new id with highest number (normally done by database backend automatically)
     paymentItem.id = paymentItems.reduce((acc, curr) => Math.max(acc, curr.id), 0) + 1
@@ -89,12 +89,33 @@ const addPayment = (payment: PaymentItemAddInput) => {
     return paymentItem
 }
 
+const updatePayment = (payment: PaymentItemUpdateInput) => {
+    let updatedItem: PaymentItem = null
+
+    // check if given payment exists in store
+    const index = paymentItems.findIndex(item => item.id === payment.id)
+    if (index > -1) {
+        // update provided fields
+        updatedItem = {...paymentItems[index], ...payment}
+
+        // set updatedAt to current time
+        const now = moment().toISOString()
+        updatedItem.updatedAt = now
+
+        // update in store
+        paymentItems[index] = updatedItem
+    }
+
+    return updatedItem
+}
+
 export default {
     Query: {
         payments: (_: void, { contractId, startDate, endDate }: QueryPaymentsArgs): Payments => getPayments(contractId, startDate, endDate)
     },
 
     Mutation: {
-        addPayment: (_: void, { payment }: MutationAddPaymentArgs): PaymentItem => addPayment(payment)
+        addPayment: (_: void, { payment }: MutationAddPaymentArgs): PaymentItem => addPayment(payment),
+        updatePayment: (_: void, { payment }: MutationUpdatePaymentArgs): PaymentItem => updatePayment(payment)
     }
 }

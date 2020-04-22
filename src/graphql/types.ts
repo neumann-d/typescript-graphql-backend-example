@@ -11,11 +11,17 @@ export type Scalars = {
 export type Mutation = {
    __typename?: 'Mutation';
   addPayment?: Maybe<PaymentItem>;
+  updatePayment?: Maybe<PaymentItem>;
 };
 
 
 export type MutationAddPaymentArgs = {
   payment: PaymentItemAddInput;
+};
+
+
+export type MutationUpdatePaymentArgs = {
+  payment: PaymentItemUpdateInput;
 };
 
 export type PaymentItem = {
@@ -34,8 +40,17 @@ export type PaymentItem = {
 export type PaymentItemAddInput = {
   contractId: Scalars['Int'];
   description?: Maybe<Scalars['String']>;
+  value: Scalars['Float'];
+  time: Scalars['String'];
+};
+
+export type PaymentItemUpdateInput = {
+  id: Scalars['Int'];
+  contractId?: Maybe<Scalars['Int']>;
+  description?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['Float']>;
   time?: Maybe<Scalars['String']>;
+  isImported?: Maybe<Scalars['Boolean']>;
 };
 
 export type Payments = {
