@@ -31,3 +31,10 @@ export type Query = {
    __typename?: 'Query';
   payments?: Maybe<Payments>;
 };
+
+
+export type QueryPaymentsArgs = {
+  contractId?: Maybe<Scalars['Int']>;
+  startDate?: Maybe<Scalars['String']>;
+  endDate?: Maybe<Scalars['String']>;
+};

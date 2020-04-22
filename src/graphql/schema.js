@@ -19,7 +19,7 @@ const typeDefs = [`
     }
 
     type Query {
-        payments: Payments
+        payments(contractId: Int, startDate: String, endDate: String): Payments
     }
 `]
 
