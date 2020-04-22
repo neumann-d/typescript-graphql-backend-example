@@ -1,8 +1,9 @@
 import moment from 'moment'
 
-import { Payments, QueryPaymentsArgs } from './types'
+import { MutationAddPaymentArgs, Payments, PaymentItem, PaymentItemAddInput, QueryPaymentsArgs } from './types'
 
-const paymentItems = [
+// simple simulated payment store (not persistent)
+const paymentItems: Array<PaymentItem> = [
     {
         id: 1367,
         contractId: 17788,
@@ -13,7 +14,7 @@ const paymentItems = [
         createdAt: '2016-12-14T12:57:31.393Z',
         updatedAt: '2016-12-14T12:57:31.393Z',
         isDeleted: false
-    },    
+    },
     {
         id: 1366,
         contractId: 17689,
@@ -38,14 +39,12 @@ const paymentItems = [
     }
 ]
 
-function getPayments(
+const getPayments = (
     contractId: QueryPaymentsArgs['contractId'],
     startDate: QueryPaymentsArgs['startDate'],
     endDate: QueryPaymentsArgs['endDate']
-) {
+) => {
     let items = [...paymentItems]
-
-    console.log('args: contractId = ', contractId, ' , startDate = ', startDate, ' , endDate = ', endDate)
 
     // apply filters, if provided
     if (contractId) {
@@ -69,8 +68,33 @@ function getPayments(
     }
 }
 
+const addPayment = (payment: PaymentItemAddInput) => {
+    const paymentItem: PaymentItem = {...payment}
+
+    // create new id with highest number (normally done by database backend automatically)
+    paymentItem.id = paymentItems.reduce((acc, curr) => Math.max(acc, curr.id), 0) + 1
+
+    // set createdAt and updatedAt to current time
+    const now = moment().toISOString()
+    paymentItem.createdAt = now
+    paymentItem.updatedAt = now
+
+    // set isImported and isDeleted flags to false by default
+    paymentItem.isImported = false
+    paymentItem.isDeleted = false
+
+    // add to 'store' (normally stored in database)
+    paymentItems.push(paymentItem)
+
+    return paymentItem
+}
+
 export default {
     Query: {
         payments: (_: void, { contractId, startDate, endDate }: QueryPaymentsArgs): Payments => getPayments(contractId, startDate, endDate)
+    },
+
+    Mutation: {
+        addPayment: (_: void, { payment }: MutationAddPaymentArgs): PaymentItem => addPayment(payment)
     }
 }

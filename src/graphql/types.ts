@@ -8,6 +8,16 @@ export type Scalars = {
   Float: number;
 };
 
+export type Mutation = {
+   __typename?: 'Mutation';
+  addPayment?: Maybe<PaymentItem>;
+};
+
+
+export type MutationAddPaymentArgs = {
+  payment: PaymentItemAddInput;
+};
+
 export type PaymentItem = {
    __typename?: 'PaymentItem';
   id?: Maybe<Scalars['Int']>;
@@ -19,6 +29,13 @@ export type PaymentItem = {
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   isDeleted?: Maybe<Scalars['Boolean']>;
+};
+
+export type PaymentItemAddInput = {
+  contractId: Scalars['Int'];
+  description?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['Float']>;
+  time?: Maybe<Scalars['String']>;
 };
 
 export type Payments = {

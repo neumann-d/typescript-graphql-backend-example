@@ -18,8 +18,19 @@ const typeDefs = [`
         isDeleted: Boolean
     }
 
+    input PaymentItemAddInput {
+        contractId: Int!
+        description: String
+        value: Float!
+        time: String!
+    }
+
     type Query {
         payments(contractId: Int, startDate: String, endDate: String): Payments
+    }
+
+    type Mutation {
+        addPayment(payment: PaymentItemAddInput!): PaymentItem
     }
 `]
 
