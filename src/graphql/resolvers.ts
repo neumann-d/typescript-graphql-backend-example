@@ -1,3 +1,4 @@
+import { UserInputError } from 'apollo-server'
 import moment from 'moment'
 
 import {
@@ -48,6 +49,12 @@ const paymentItems: Array<PaymentItem> = [
     }
 ]
 
+const validateTime = (time: string) => {
+    if (!moment(time).isValid()) {
+        throw new UserInputError(`Provided time '${time}' is not valid!`)
+    }
+}
+
 const getPayments = (
     contractId: QueryPaymentsArgs['contractId'],
     startDate: QueryPaymentsArgs['startDate'],
@@ -80,6 +87,9 @@ const getPayments = (
 const addPayment = (payment: PaymentItemAddInput) => {
     const paymentItem: PaymentItem = { ...payment }
 
+    // validate time value
+    validateTime(paymentItem.time)
+
     // create new id with highest number (normally done by database backend automatically)
     paymentItem.id = paymentItems.reduce((acc, curr) => Math.max(acc, curr.id), 0) + 1
 
@@ -106,6 +116,9 @@ const updatePayment = (payment: PaymentItemUpdateInput) => {
     if (index > -1) {
         // update provided fields
         updatedItem = { ...paymentItems[index], ...payment }
+
+        // validate time value
+        validateTime(updatedItem.time)
 
         // set updatedAt to current time
         const now = moment().toISOString()
