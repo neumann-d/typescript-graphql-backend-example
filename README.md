@@ -1,6 +1,6 @@
 # typescript-graphql-backend-example
 
-This is a demo of a GraphQl Backend using Apollo Server. The code is written in TypeScript with GraphQl type generation using `graphql-codegen` package.
+This is a demo of a GraphQL Backend using Apollo Server. The code is written in TypeScript with GraphQL type generation using `graphql-codegen` package.
 
 ## Usage
 
@@ -20,7 +20,7 @@ $ npm run build
 $ npm start
 ```
 
-When server is running, you can try the API in GraphQl's Playground: http://localhost:4000/
+When server is running, you can try the API in GraphQL's Playground: http://localhost:4000/
 
 ## API Examples
 
