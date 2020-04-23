@@ -9,7 +9,7 @@ Install dependencies:
 $ npm install
 ```
 
-Run in develop mode, using `ts-node` to restart server on `.ts` file changes automatically:
+Run in develop mode, using `ts-node-dev` to restart server on `.ts` file changes automatically:
 ```
 $ npm run dev
 ```
